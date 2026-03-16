@@ -1,4 +1,4 @@
 package com.mdekerga.back_end.entity;
 
-public class Day {
+public class CraDay {
 }
