@@ -1,39 +1,40 @@
 package com.mdekerga.back_end.controller;
 
-import com.mdekerga.back_end.entity.Mission;
-import com.mdekerga.back_end.exception.ResourceNotFoundException;
-import com.mdekerga.back_end.repository.MissionRepository;
+import com.mdekerga.back_end.dto.MissionDTO;
+import com.mdekerga.back_end.service.MissionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/missions")
+@RequestMapping("/api/admin/missions")
 public class MissionController {
+
     @Autowired
-    private MissionRepository missionRepository;
+    private MissionService missionService;
 
     @GetMapping
-    public List<Mission> getAllMissions(){
-        return missionRepository.findAll();
+    public List<MissionDTO> getAllMissions() {
+        return missionService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Mission getMission(@PathVariable Long id){
-        return missionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mission not found"));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public MissionDTO createMission(@Valid @RequestBody MissionDTO dto) {
+        return missionService.save(dto);
     }
 
-    @PostMapping()
-    public Mission createMission(@RequestBody Mission newMission){
-
-        return missionRepository.save(newMission);
+    @PutMapping("/{id}")
+    public MissionDTO updateMission(@PathVariable Long id, @Valid @RequestBody MissionDTO dto) {
+        return missionService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteMission(@PathVariable Long id){
-        Mission mission = missionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mission not found"));
-
-        missionRepository.deleteById(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMission(@PathVariable Long id) {
+        missionService.delete(id);
     }
 }

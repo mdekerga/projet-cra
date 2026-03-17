@@ -1,48 +1,50 @@
 package com.mdekerga.back_end.controller;
 
-import com.mdekerga.back_end.entity.User;
-import com.mdekerga.back_end.exception.ResourceNotFoundException;
-import com.mdekerga.back_end.repository.UserRepository;
+import com.mdekerga.back_end.dto.UserDTO;
+import com.mdekerga.back_end.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/admin/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    @GetMapping("/")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @GetMapping
+    public List<UserDTO> getAllUsers() {
+        return userService.findAll();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        return userRepository.save(user);
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDto) {
+        return new ResponseEntity<>(userService.save(userDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id){
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found "));
+    public UserDTO getUserById(@PathVariable Long id) {
+        return userService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails){
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-
-
-        return userRepository.save(user);
+    public UserDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDto) {
+        return userService.update(id, userDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id ){
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id: " + id));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+    }
 
-        userRepository.delete(user);
+    @PatchMapping("/{id}/activation")
+    public void toggleActivation(@PathVariable Long id, @RequestParam boolean active) {
+        userService.changeActivationStatus(id, active);
     }
 }

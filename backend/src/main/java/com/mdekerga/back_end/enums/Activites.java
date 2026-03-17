@@ -1,6 +1,7 @@
 package com.mdekerga.back_end.enums;
 
-public enum Absences {
+public enum Activites {
+    WORK,
     Congé,
     RTT,
     Maladie

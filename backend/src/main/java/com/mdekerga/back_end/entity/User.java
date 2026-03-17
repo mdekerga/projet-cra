@@ -1,16 +1,19 @@
 package com.mdekerga.back_end.entity;
 
 import com.mdekerga.back_end.enums.ContratType;
+import com.mdekerga.back_end.enums.Role;
 import com.mdekerga.back_end.enums.Seniorite;
 import com.mdekerga.back_end.enums.Statut;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +25,13 @@ public class User {
     @Column(name = "lastname")
     private String last_name;
 
-    @Column(name="email")
+    @Column(name = "role")
+    private Role role;
+
+    @Column(name="hash_password")
+    private String password;
+
+    @Column(unique = true, name="email")
     private String email;
 
     @Column(name="active")
@@ -38,5 +47,5 @@ public class User {
     private Seniorite seniorite;
 
     @Column(name="salaire")
-    private double salaire;
+    private BigDecimal salaire;
 }
