@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MissionService } from '../../services/mission.service';
-import { MissionDialogComponent } from '../mission-dialog/mission-dialog';
 import { Mission } from '../../shared/models/mission.model';
+import { MissionDialogComponent } from '../mission-dialog/mission-dialog';
 
 @Component({
   selector: 'app-mission-management',
   standalone: true,
+  imports: [CommonModule, MatTableModule, MatIconModule, MatButtonModule],
   templateUrl: './mission-management.html',
   styleUrls: ['./mission-management.css'],
 })

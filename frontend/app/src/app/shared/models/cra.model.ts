@@ -1,28 +1,22 @@
-import { User } from './user.model';
-import { Mission } from './mission.model';
 
-export enum ActivityType {
-  WORK = 'WORK',
-  CONGE = 'CONGE',
-  RTT = 'RTT',
-  MALADIE = 'MALADIE',
-}
+export type DayType = 'MISSION' | 'INTERCONTRAT' | 'CONGE' | 'RTT' | 'MALADIE';
 
-export interface CRADay {
-  id?: number;
+export interface CraEntry {
   date: string;
-  activityType: ActivityType;
-  duration: number;
-  mission?: Mission;
+  type: DayType;
 }
 
 export interface CRA {
   id: number;
   month: number;
   year: number;
-  status: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED';
+  status: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'INVALIDATED';
+  entries: any[];
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  submittedAt?: string; 
   rejectionReason?: string;
-  submittedAt?: string;
-  days: CRADay[];
-  user?: User;
 }

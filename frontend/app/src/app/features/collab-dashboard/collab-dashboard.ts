@@ -1,49 +1,66 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Pour ngIf, ngClass, pipes
+import { RouterModule } from '@angular/router'; // Pour routerLink
+
+// Imports Angular Material
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+
 import { CraService } from '../../services/cra.service';
-import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CRA } from '../../shared/models/cra.model';
 
 @Component({
   selector: 'app-collab-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+  ],
   templateUrl: './collab-dashboard.html',
-  imports: [CommonModule, FormsModule],
   styleUrls: ['./collab-dashboard.css'],
 })
-export class CollabDashboardComponent implements OnInit {
-  currentCRA: any = null;
-  selectedMonth: number = new Date().getMonth() + 1;
-  selectedYear: number = new Date().getFullYear();
-  errorMessage: string = '';
+export class CraDashboardComponent implements OnInit {
+  currentCra: CRA | null = null;
+  craHistory: CRA[] = [];
+  currentMonthName: string = '';
+  currentYear: number = new Date().getFullYear();
 
-  constructor(
-    private craService: CraService,
-    private authService: AuthService,
-  ) {}
+  stats = { workDays: 0, offDays: 0 };
 
-  ngOnInit(): void {}
+  constructor(private craService: CraService) {}
 
-  onGenerateClick() {
-    const userId = this.authService.getUserId();
-    this.craService.generateCRA(userId, this.selectedMonth, this.selectedYear).subscribe({
-      next: (data) => {
-        this.currentCRA = data;
-        this.errorMessage = '';
+  ngOnInit(): void {
+    const now = new Date();
+    this.currentMonthName = now.toLocaleString('fr-FR', { month: 'long' });
+
+    const userId = 1;
+
+    this.craService.getCraByMonth(userId, now.getMonth() + 1, now.getFullYear()).subscribe({
+      next: (cra) => {
+        this.currentCra = cra;
+        this.calculateStats();
       },
-      error: (err) => (this.errorMessage = 'Erreur lors de la génération.'),
+      error: (err) => console.error('Erreur chargement CRA', err),
+    });
+
+    this.craService.getUserHistory(userId).subscribe((history) => {
+      this.craHistory = history;
     });
   }
 
-  onSubmitCRA() {
-    this.craService.submitCRA(this.currentCRA.id).subscribe({
-      next: (data) => {
-        this.currentCRA = data;
-        alert('CRA soumis avec succès !');
-      },
-      error: (err) => {
-        // Affiche l'erreur du back (ex: "Hors fenêtre 22-28")
-        this.errorMessage = err.error.message || 'Erreur de soumission.';
-      },
-    });
+  private calculateStats(): void {
+    if (!this.currentCra) return;
+    this.stats.workDays = this.currentCra.entries.filter((e) =>
+      ['MISSION', 'INTERCONTRAT'].includes(e.type),
+    ).length;
+    this.stats.offDays = this.currentCra.entries.filter((e) =>
+      ['CONGE', 'RTT', 'MALADIE'].includes(e.type),
+    ).length;
   }
 }

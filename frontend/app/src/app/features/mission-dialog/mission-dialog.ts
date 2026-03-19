@@ -21,43 +21,7 @@ import { CommonModule } from '@angular/common';
     MatSelectModule,
     MatButtonModule,
   ],
-  template: `
-    <h2 mat-dialog-title>Assigner une mission</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" class="d-flex flex-column gap-3 mt-2">
-        <mat-form-field appearance="outline">
-          <mat-label>Nom du Client</mat-label>
-          <input matInput formControlName="clientName" />
-        </mat-form-field>
-
-        <div class="d-flex gap-2">
-          <mat-form-field appearance="outline">
-            <mat-label>Début</mat-label>
-            <input matInput type="date" formControlName="startDate" />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Fin</mat-label>
-            <input matInput type="date" formControlName="endDate" />
-          </mat-form-field>
-        </div>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Assigner à...</mat-label>
-          <mat-select formControlName="assignedUserId">
-            <mat-option *ngFor="let user of users" [value]="user.id">
-              {{ user.firstName }} {{ user.lastName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="ref.close()">Annuler</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">
-        Créer
-      </button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: 'mission-dialog.html',
 })
 export class MissionDialogComponent implements OnInit {
   form: FormGroup;

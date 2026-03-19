@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,24 +49,37 @@ export class UserManagementComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.userService.getAllUsers().subscribe({
-      next: (data) => {
-        this.dataSource = data;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des utilisateurs', err);
-        this.errorMessage =
-          'Impossible de charger les utilisateurs. Vérifiez la connexion au backend.';
-        this.isLoading = false;
-      },
-    });
+    this.userService
+      .getAllUsers()
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (data) => {
+          this.dataSource = data;
+        },
+        error: (err) => {
+          console.error('Erreur lors du chargement', err);
+          this.errorMessage = 'Impossible de charger les utilisateurs. Vérifiez la connexion.';
+        },
+      });
   }
 
   openAddUserDialog(): void {
     const dialogRef = this.dialog.open(UserDialogComponent, {
       width: '450px',
       data: { mode: 'create' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.isLoading = true;
+        this.userService
+          .createUser(result)
+          .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe({
+            next: () => this.loadUsers(),
+            error: (err) => console.error('Erreur de création', err),
+          });
+      }
     });
 
     dialogRef.afterClosed().subscribe((result) => {

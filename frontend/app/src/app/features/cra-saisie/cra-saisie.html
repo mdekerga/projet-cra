@@ -1,0 +1,40 @@
+<div class="saisie-container container mt-4">
+  <div class="header-card mat-elevation-z2 mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="h4 m-0">Saisie du CRA — Mars 2026</h1>
+        <p class="text-muted m-0">Sélectionnez vos jours de présence sur site ou en télétravail.</p>
+      </div>
+      <div class="stats-badge">
+        <span class="count">{{ totalWorkedDays }}</span>
+        <span class="label">Jours travaillés</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="calendar-card mat-elevation-z3">
+    <div class="calendar-grid">
+      <div class="day-header" *ngFor="let day of weekDays">{{ day }}</div>
+
+      <div class="day-cell empty" *ngFor="let empty of blankDays"></div>
+
+      <div
+        class="day-cell"
+        *ngFor="let date of monthDays"
+        [class.selected]="date.isWorked"
+        [class.weekend]="date.isWeekend"
+        (click)="toggleDay(date)"
+      >
+        <span class="day-number">{{ date.day }}</span>
+        <mat-icon *ngIf="date.isWorked">check_circle</mat-icon>
+      </div>
+    </div>
+
+    <div class="actions-footer mt-4">
+      <button mat-stroked-button color="warn">Réinitialiser</button>
+      <button mat-raised-button color="primary" (click)="submitCRA()">
+        <mat-icon>send</mat-icon> Envoyer pour validation
+      </button>
+    </div>
+  </div>
+</div>

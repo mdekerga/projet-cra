@@ -1,0 +1,39 @@
+<div class="cra-container" *ngIf="currentCra">
+  <header>
+    <h2>CRA - {{ currentCra.month }}/{{ currentCra.year }}</h2>
+    <span class="badge" [ngClass]="currentCra.status">{{ currentCra.status }}</span>
+  </header>
+
+  <div class="actions" *ngIf="currentCra.status === 'DRAFT' || currentCra.status === 'REJECTED'">
+    <button mat-raised-button color="primary" (click)="fillFullMonth()">
+      🚀 Remplir tout le mois (Mission)
+    </button>
+  </div>
+
+  <div class="calendar-grid">
+    <div
+      *ngFor="let entry of currentCra.entries"
+      class="day-card"
+      [class.weekend]="isWeekend(entry.date)"
+    >
+      <span class="date">{{ entry.date | date: 'dd/MM' }}</span>
+
+      <mat-form-field appearance="outline" *ngIf="!isWeekend(entry.date)">
+        <mat-select [(value)]="entry.type" [disabled]="isReadOnly()">
+          <mat-option value="MISSION">Mission</mat-option>
+          <mat-option value="INTERCONTRAT">Intercontrat</mat-option>
+          <mat-option value="CONGE">Congé</mat-option>
+          <mat-option value="RTT">RTT</mat-option>
+          <mat-option value="MALADIE">Maladie</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <footer *ngIf="canSubmit()">
+    <p *ngIf="!isInWindow()" class="warn">La période de soumission est du 22 au 28.</p>
+    <button mat-flat-button color="accent" [disabled]="!isInWindow()" (click)="submit()">
+      Soumettre pour validation
+    </button>
+  </footer>
+</div>
