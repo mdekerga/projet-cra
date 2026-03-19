@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
 
     private UserDTO mapToDTO(User user) {
         UserDTO dto = new UserDTO();
-        dto.setId(user.getUser_id());
+        dto.setId(user.getId());
         dto.setFirstName(user.getFirst_name());
         dto.setLastName(user.getLast_name());
         dto.setEmail(user.getEmail());
