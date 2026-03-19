@@ -18,8 +18,10 @@ public class Mission {
     @Column(name="mission_id")
     private Long id;
 
-    @Column(nullable = false,name="mission_name")
-    private String mission_name;
+    @Column(nullable = false)
+    private String Name;
+
+    private String Client;
 
     @Column(name="mission_start")
     private LocalDate start_date;

@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Validation des CRA en attente</h3>
+    <span class="badge bg-primary">{{ pendingCRAs.length }} à traiter</span>
+  </div>
+
+  <div *ngIf="pendingCRAs.length === 0" class="alert alert-info shadow-sm">
+    Aucun CRA en attente de validation pour le moment.
+  </div>
+
+  <div class="row" *ngIf="pendingCRAs.length > 0">
+    <div class="col-12">
+      <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead class="table-light">
+          <tr>
+            <th>Collaborateur</th>
+            <th>Période</th>
+            <th>Date d'envoi</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cra of pendingCRAs">
+            <td>
+              <div class="fw-bold">{{ cra.user?.lastName }} {{ cra.user?.firstName }}</div>
+              <small class="text-muted">{{ cra.user?.email }}</small>
+            </td>
+            <td>{{ cra.month }}/{{ cra.year }}</td>
+            <td>{{ cra.submittedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="text-center">
+              <button (click)="onApprove(cra.id)" class="btn btn-sm btn-success me-2">
+                Approuver
+              </button>
+              <button (click)="onReject(cra.id)" class="btn btn-sm btn-outline-danger">
+                Rejeter
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="login-container d-flex align-items-center justify-content-center">
+  <div class="card shadow-lg border-0" style="max-width: 450px; width: 100%">
+    <div class="card-header bg-primary text-white text-center py-4">
+      <h4 class="mb-0">Gestion des CRA</h4>
+      <small class="opacity-75">MDEKERGA - Portail Sécurisé</small>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label fw-bold">Email professionnel</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control"
+              placeholder="admin@cbx.fr"
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 py-2 fw-bold"
+          [disabled]="loginForm.invalid"
+        >
+          SE CONNECTER
+        </button>
+      </form>
+    </div>
+
+    <div class="card-footer text-center py-3 bg-light">
+      <small class="text-muted">© 2026 MDEKERGA - Version Entreprise</small>
+    </div>
+  </div>
+</div>

@@ -51,7 +51,7 @@ public class MissionService {
     }
 
     private void copyDtoToEntity(MissionDTO dto, Mission entity) {
-        entity.setMission_name(dto.getTitre());
+        entity.setName(dto.getTitre());
         entity.setStart_date(dto.getDateDebut());
         entity.setEnd_date(dto.getDateFin());
         entity.setDescription(dto.getDescription());
@@ -62,7 +62,7 @@ public class MissionService {
     private MissionDTO mapToDTO(Mission mission) {
         MissionDTO dto = new MissionDTO();
         dto.setId(mission.getId());
-        dto.setTitre(mission.getMission_name());
+        dto.setTitre(mission.getName());
         dto.setDateDebut(mission.getStart_date());
         dto.setDateFin(mission.getEnd_date());
         dto.setDescription(mission.getDescription());

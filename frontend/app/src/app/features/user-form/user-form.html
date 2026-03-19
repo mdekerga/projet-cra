@@ -1,0 +1,65 @@
+<div class="container mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">{{ isEditMode ? 'Modifier' : 'Créer' }} un Collaborateur</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" formControlName="firstName" class="form-control" />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" formControlName="lastName" class="form-control" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.bg-light]="isEditMode"
+          />
+          <small class="text-muted" *ngIf="isEditMode"
+            >L'identifiant email ne peut pas être modifié.</small
+          >
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Rôle</label>
+            <select formControlName="role" class="form-select">
+              <option value="ADMIN">Administrateur</option>
+              <option value="COLLABORATEUR">Collaborateur</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Statut par défaut</label>
+            <select formControlName="statut" class="form-select">
+              <option value="INTERCONTRAT">Intercontrat</option>
+              <option value="MISSION">En Mission</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-check form-switch mb-4">
+          <input class="form-check-input" type="checkbox" formControlName="active" />
+          <label class="form-check-label">Compte actif</label>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success" [disabled]="userForm.invalid">
+            {{ isEditMode ? 'Sauvegarder les modifications' : 'Créer le compte' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" routerLink="/admin/users">
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
