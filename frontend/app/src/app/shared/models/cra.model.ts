@@ -1,10 +1,5 @@
 import { User } from './user.model';
-
-export interface Mission {
-  id: number;
-  name: string;
-  clientName: string;
-}
+import { Mission } from './mission.model';
 
 export enum ActivityType {
   WORK = 'WORK',

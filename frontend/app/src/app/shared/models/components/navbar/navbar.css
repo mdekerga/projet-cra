@@ -1,0 +1,64 @@
+.sidenav-container {
+  height: 100vh; /* Prend toute la hauteur de l'écran */
+}
+
+/* Style général de la Sidenav (Foncé) */
+.sidenav {
+  width: 260px; /* Largeur de la sidebar */
+  background-color: #1a1d24; /* Couleur de fond sombre (inspiration image) */
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Zone du Logo / Titre */
+.brand-title {
+  padding: 30px 20px;
+  text-align: left;
+}
+
+.brand-title h3 {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.6em;
+  color: white; /* Titre en blanc */
+}
+
+/* Liste de navigation */
+.nav-list {
+  padding-top: 10px;
+}
+
+/* Style des éléments de navigation */
+.nav-item {
+  color: rgba(255, 255, 255, 0.8) !important; /* Texte légèrement transparent */
+  height: 60px !important; /* Hauteur des éléments */
+}
+
+/* Effet de survol (Hover) */
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Style du lien ACTIF (comme dans l'image) */
+.active-link {
+  color: white !important; /* Texte blanc brillant */
+  background-color: rgba(255, 255, 255, 0.1) !important; /* Fond plus clair */
+}
+
+/* Style des icônes */
+.mat-icon-item {
+  color: rgba(255, 255, 255, 0.7); /* Icônes plus claires */
+  margin-right: 15px;
+}
+
+/* Zone utilisateur / Déconnexion en bas */
+.user-zone {
+  margin-top: auto; /* Pousse vers le bas */
+  padding: 20px;
+}
+
+.user-zone button {
+  color: #f44336; /* Rouge pour la déconnexion */
+  width: 100%;
+}

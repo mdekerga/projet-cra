@@ -1,5 +1,6 @@
 package com.mdekerga.back_end.controller;
 
+import com.mdekerga.back_end.dto.ActivationRequest;
 import com.mdekerga.back_end.security.JwtUtil;
 import com.mdekerga.back_end.entity.User;
 import com.mdekerga.back_end.repository.UserRepository;
@@ -26,8 +27,15 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     private JwtUtil jwtUtil;
+
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping("/login")
 
@@ -54,5 +62,18 @@ public class AuthController {
         response.put("role", user.getRole().name());
 
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/activate")
+    public ResponseEntity<?> activateAccount(@RequestBody ActivationRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // On encode le nouveau mot de passe
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // On active le compte
+        user.setActive(true);
+
+        userRepository.save(user);
+        return ResponseEntity.ok("Compte activé avec succès !");
     }
 }

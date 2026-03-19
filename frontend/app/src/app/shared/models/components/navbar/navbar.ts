@@ -1,12 +1,25 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
   templateUrl: './navbar.html',
 })
 export class NavbarComponent {
@@ -15,8 +28,8 @@ export class NavbarComponent {
     private router: Router,
   ) {}
 
-  onLogout() {
-    this.authService.logout();
+  logout() {
+    localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
 

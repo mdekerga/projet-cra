@@ -5,23 +5,33 @@ import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashbo
 import { CraValidationComponent } from './features/cra-validation-component/cra-validation-component';
 import { UserManagementComponent } from './features/user-management/user-management';
 import { adminGuard, authGuard } from './guards/auth.guard';
+import { AdminLayoutComponent } from './shared/models/components/admin-layout/admin-layout';
+import { MissionManagementComponent } from './features/mission-management/mission-management';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   {
-    path: 'dashboard',
+    path: 'collab',
     component: CollabDashboardComponent,
     canActivate: [authGuard],
+    children: [
+      { path: 'dashboard', component: CollabDashboardComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
   },
 
   {
     path: 'admin',
-    component: AdminDashboardComponent,
+    component: AdminLayoutComponent,
     canActivate: [adminGuard],
     children: [
       { path: 'users', component: UserManagementComponent },
+      { path: 'missions', component: MissionManagementComponent },
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'validations', component: CraValidationComponent },
       { path: 'cras', component: CraValidationComponent },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
     ],
   },
 

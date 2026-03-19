@@ -7,7 +7,6 @@ import { User } from '../shared/models/user.model';
   providedIn: 'root',
 })
 export class UserService {
-
   private apiUrl = 'http://localhost:8080/api/admin/users';
 
   constructor(private http: HttpClient) {}
@@ -20,7 +19,6 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 
-
   createUser(user: User): Observable<User> {
     return this.http.post<User>(this.apiUrl, user);
   }
@@ -29,11 +27,14 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/${id}`, user);
   }
 
-
   toggleActivation(id: number, active: boolean): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}/activation`, null, {
       params: { active: active.toString() },
     });
+  }
+
+  toggleUserStatus(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/toggle-status`, {});
   }
 
   deleteUser(id: number): Observable<void> {

@@ -50,4 +50,8 @@ export class AuthService {
     }
     return 0;
   }
+
+  activate(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/activate`, data);
+  }
 }

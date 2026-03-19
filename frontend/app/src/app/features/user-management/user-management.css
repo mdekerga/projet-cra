@@ -1,0 +1,32 @@
+.page-container {
+  padding: 2rem;
+}
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.table-wrapper {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+table {
+  width: 100%;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.badge.active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.badge.inactive {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
