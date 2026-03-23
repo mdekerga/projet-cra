@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common'; 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 import { MissionService } from '../../services/mission.service';
 import { MissionDialogComponent } from '../mission-dialog/mission-dialog';
 import { Mission } from '../../shared/models/mission.model';
@@ -7,6 +12,7 @@ import { Mission } from '../../shared/models/mission.model';
 @Component({
   selector: 'app-mission-management',
   standalone: true,
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule],
   templateUrl: './mission-management.html',
   styleUrls: ['./mission-management.css'],
 })
