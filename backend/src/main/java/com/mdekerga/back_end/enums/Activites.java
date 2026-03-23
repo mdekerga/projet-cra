@@ -4,5 +4,5 @@ public enum Activites {
     WORK,
     Congé,
     RTT,
-    Maladie
+    INTERCONTRAT, Maladie
 }

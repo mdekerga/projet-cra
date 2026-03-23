@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Transactional
 public interface CRARepository extends JpaRepository<CRA, Long> {
 
+    boolean existsByUserIdAndMonthAndYear(Long userId, int month, int year);
 }

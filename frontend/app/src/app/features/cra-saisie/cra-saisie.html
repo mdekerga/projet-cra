@@ -1,0 +1,50 @@
+<div class="cra-container">
+  <div class="header-actions">
+    <h2>Saisie du CRA - {{ currentMonth | date: 'MMMM yyyy' }}</h2>
+
+    <div class="buttons">
+      <button mat-raised-button color="accent" (click)="fillFullMonth()" [disabled]="isReadOnly">
+        <mat-icon>bolt</mat-icon> Remplir tout le mois
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitCra()"
+        [disabled]="!isSubmissionWindow || isReadOnly"
+      >
+        <mat-icon>send</mat-icon> Soumettre le CRA
+      </button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="chip worked">Travail</span>
+    <span class="chip off">Congé/RTT</span>
+    <span class="chip weekend">Week-end</span>
+  </div>
+
+  <div class="calendar-grid">
+    <div
+      class="day-card"
+      *ngFor="let day of daysInMonth"
+      [ngClass]="{
+        weekend: day.isWeekend,
+        worked: day.type === 'WORKED',
+        absent: day.type === 'ABSENCE',
+      }"
+    >
+      <div class="day-number">{{ day.date | date: 'd' }}</div>
+      <div class="day-name">{{ day.date | date: 'EEEE' }}</div>
+
+      <div class="day-action" *ngIf="!day.isWeekend">
+        <mat-form-field appearance="outline">
+          <mat-select [(value)]="day.type" [disabled]="isReadOnly">
+            <mat-option value="WORKED">Mission</mat-option>
+            <mat-option value="ABSENCE">Congé / RTT</mat-option>
+            <mat-option value="SICK">Maladie</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>

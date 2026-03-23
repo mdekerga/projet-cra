@@ -1,0 +1,68 @@
+.cra-container {
+  padding: 20px;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 colonnes pour les jours de la semaine */
+  gap: 10px;
+}
+
+.day-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 100px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+
+.day-card.weekend {
+  background-color: #f0f0f0;
+  color: #aaa;
+}
+.day-card.worked {
+  border: 2px solid #3f51b5;
+  background-color: #e8eaf6;
+}
+.day-card.absent {
+  border: 2px solid #ff9800;
+  background-color: #fff3e0;
+}
+
+.day-number {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.day-name {
+  font-size: 0.8rem;
+  text-transform: capitalize;
+  margin-bottom: 10px;
+}
+
+.legend {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+.chip {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: 1px solid #ccc;
+}
+.worked {
+  background: #e8eaf6;
+}
+.off {
+  background: #fff3e0;
+}

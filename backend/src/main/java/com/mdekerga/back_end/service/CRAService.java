@@ -23,6 +23,11 @@ public class CRAService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
+        // Vérifier si un CRA existe déjà pour ce mois pour éviter les doublons
+        if (craRepository.existsByUserIdAndMonthAndYear(userId, month, year)) {
+            throw new RuntimeException("Un CRA existe déjà pour ce mois.");
+        }
+
         CRA cra = new CRA();
         cra.setUser(user);
         cra.setMonth(month);
@@ -31,28 +36,31 @@ public class CRAService {
         cra.setDays(new ArrayList<>());
 
         YearMonth yearMonth = YearMonth.of(year, month);
-        int daysInMonth = yearMonth.lengthOfMonth();
-
         List<Assignment> assignments = assignmentRepository.findByUserId(userId);
 
-        for (int day = 1; day <= daysInMonth; day++) {
+        for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
             LocalDate date = yearMonth.atDay(day);
 
+            // On ne génère des lignes que pour les jours ouvrés
             if (date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                 CraDay craDay = new CraDay();
                 craDay.setCra(cra);
                 craDay.setDate(date);
                 craDay.setDuration(1.0);
-                craDay.setActivityType(Activites.WORK);
 
                 Mission activeMission = findActiveMission(assignments, date);
 
-                craDay.setMission(activeMission);
-
+                if (activeMission != null) {
+                    craDay.setMission(activeMission);
+                    craDay.setActivityType(Activites.WORK);
+                } else {
+                    // Règle métier : Auto intercontrat si pas de mission
+                    craDay.setMission(null);
+                    craDay.setActivityType(Activites.INTERCONTRAT);
+                }
                 cra.getDays().add(craDay);
             }
         }
-
         return craRepository.save(cra);
     }
 
@@ -60,6 +68,7 @@ public class CRAService {
         CRA cra = craRepository.findById(craId)
                 .orElseThrow(() -> new RuntimeException("CRA non trouvé"));
 
+        // Règle métier : Fenêtre 22 -> 28
         ZonedDateTime nowParis = ZonedDateTime.now(ZoneId.of("Europe/Paris"));
         int currentDay = nowParis.getDayOfMonth();
 
@@ -69,22 +78,24 @@ public class CRAService {
 
         cra.setEtatCRA(EtatCRA.SUBMITTED);
         cra.setSubmittedAt(nowParis.toLocalDateTime());
-
         return craRepository.save(cra);
     }
 
-
-    public CRA validateCRA(Long craId, boolean approved, String reason) {
+    /**
+     * Gère la validation, le rejet ou l'invalidation
+     * @param action : APPROVED, REJECTED, ou INVALIDATED
+     */
+    public CRA processAdminAction(Long craId, EtatCRA action, String reason) {
         CRA cra = craRepository.findById(craId)
                 .orElseThrow(() -> new RuntimeException("CRA non trouvé"));
 
-        if (!approved && (reason == null || reason.isBlank())) {
-            throw new RuntimeException("Un motif est obligatoire pour rejeter ou invalider un CRA.");
+        if ((action == EtatCRA.REJECTED || action == EtatCRA.INVALIDATED)
+                && (reason == null || reason.isBlank())) {
+            throw new RuntimeException("Le motif est obligatoire pour un rejet ou une invalidation.");
         }
 
-        cra.setEtatCRA(approved ? EtatCRA.APPROVED : EtatCRA.REJECTED);
-        cra.setRejectionReason(approved ? null : reason);
-
+        cra.setEtatCRA(action);
+        cra.setRejectionReason(reason);
         return craRepository.save(cra);
     }
 

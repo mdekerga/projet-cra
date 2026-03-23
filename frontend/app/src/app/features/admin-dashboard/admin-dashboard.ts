@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// Importations Material
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table'; // Contient mat-cell, mat-header-cell, etc.
+import { MatTableModule } from '@angular/material/table'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -12,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     MatCardModule,
-    MatTableModule, // <--- Indispensable pour les directives de table
+    MatTableModule, 
     MatButtonModule,
     MatIconModule,
   ],
@@ -32,7 +31,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadDashboardData() {
-    // Data mockée pour le test
     this.stats = { totalCollabs: 12, intercontratCount: 2 };
     this.pendingCras = [
       { id: 101, user: { firstName: 'Alice', lastName: 'Martin' }, month: new Date() },

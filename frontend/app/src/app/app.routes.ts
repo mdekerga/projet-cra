@@ -8,6 +8,7 @@ import { adminGuard, authGuard } from './guards/auth.guard';
 import { AdminLayoutComponent } from './shared/models/components/admin-layout/admin-layout';
 import { MissionManagementComponent } from './features/mission-management/mission-management';
 import { NavbarCollabComponent } from './shared/models/components/navbar-collab/navbar-collab';
+import { CraSaisie } from './features/cra-saisie/cra-saisie';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +19,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: NavbarCollabComponent },
+      { path: 'cra', component: CraSaisie },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

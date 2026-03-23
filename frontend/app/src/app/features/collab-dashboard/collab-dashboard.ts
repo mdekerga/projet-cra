@@ -41,7 +41,6 @@ export class CollabDashboardComponent implements OnInit {
         alert('CRA soumis avec succès !');
       },
       error: (err) => {
-        // Affiche l'erreur du back (ex: "Hors fenêtre 22-28")
         this.errorMessage = err.error.message || 'Erreur de soumission.';
       },
     });
