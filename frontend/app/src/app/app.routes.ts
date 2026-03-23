@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login';
-import { CollabDashboardComponent } from './features/collab-dashboard/collab-dashboard';
+import { CollabDashboard } from './features/collab-dashboard/collab-dashboard';
 import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard';
 import { CraValidationComponent } from './features/cra-validation-component/cra-validation-component';
 import { UserManagementComponent } from './features/user-management/user-management';
@@ -19,7 +19,7 @@ export const routes: Routes = [
     component: CollabLayout,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: CollabDashboardComponent },
+      { path: 'dashboard', component: CollabDashboard },
       { path: 'cra', component: CraSaisie },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

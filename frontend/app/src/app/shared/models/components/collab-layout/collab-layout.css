@@ -1,0 +1,12 @@
+.admin-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  padding: 20px;
+}

@@ -1,52 +1,71 @@
-<div class="container mt-4">
-  <h2>Mon Compte Rendu d'Activité (CRA)</h2>
-
-  <div class="card p-3 mb-4">
-    <div class="d-flex gap-3 align-items-center">
-      <select [(ngModel)]="selectedMonth" class="form-select w-auto">
-        <option [value]="3">Mars</option>
-        <option [value]="4">Avril</option>
-      </select>
-      <button (click)="onGenerateClick()" class="btn btn-primary">
-        🚀 Générer mon mois (1-clic)
-      </button>
-    </div>
-  </div>
-
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-  <table class="table table-bordered" *ngIf="currentCRA">
-    <thead class="table-light">
-      <tr>
-        <th>Date</th>
-        <th>Activité</th>
-        <th>Mission / Projet</th>
-        <th>Durée</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let day of currentCRA.days">
-        <td>{{ day.date | date: 'EEEE dd/MM' }}</td>
-        <td>{{ day.activityType }}</td>
-        <td>
-          <span *ngIf="day.mission">{{ day.mission.name }}</span>
-          <span *ngIf="!day.mission" class="badge bg-warning text-dark">Intercontrat</span>
-        </td>
-        <td>{{ day.duration }}j</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="mt-3" *ngIf="currentCRA">
-    <button
-      (click)="onSubmitCRA()"
-      class="btn btn-success"
-      [disabled]="currentCRA.status !== 'DRAFT'"
-    >
-      Envoyer pour validation
-    </button>
-    <p class="text-muted mt-2">
-      Statut actuel : <strong>{{ currentCRA.status }}</strong>
+<div class="dashboard-container">
+  <header class="welcome-section">
+    <h1>Bonjour, Alice ! 👋</h1>
+    <p class="mat-body-1">
+      Voici le récapitulatif de votre activité pour le mois de
+      {{ currentMonth | date: 'MMMM yyyy' }}
     </p>
+  </header>
+
+  <div class="dashboard-grid">
+    <mat-card class="status-card" [ngClass]="getStatusClass()">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>assignment</mat-icon>
+        <mat-card-title>Statut de mon CRA</mat-card-title>
+        <mat-card-subtitle>Mois en cours</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="status-content">
+        <div class="status-badge">{{ craStatus }}</div>
+        <p *ngIf="craStatus === 'REJECTED'" class="rejection-msg">
+          <strong>Motif du rejet :</strong> {{ rejectionReason }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" routerLink="/collab/cra-saisie">
+          <mat-icon>edit</mat-icon>
+          {{
+            craStatus === 'DRAFT' || craStatus === 'REJECTED' ? 'Saisir / Modifier' : 'Consulter'
+          }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="mission-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>business</mat-icon>
+        <mat-card-title>Mission Actuelle</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h3 class="mission-name">{{ currentMission?.name || 'En Intercontrat' }}</h3>
+        <p class="client-name" *ngIf="currentMission">{{ currentMission?.client }}</p>
+        <div class="mission-period">
+          <mat-icon inline>calendar_today</mat-icon>
+          <span
+            >Du {{ currentMission?.startDate | date: 'shortDate' }} au
+            {{ currentMission?.endDate | date: 'shortDate' }}</span
+          >
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="window-card" [ngClass]="{ active: isSubmissionWindow }">
+      <mat-card-content>
+        <div class="window-info">
+          <mat-icon class="window-icon">{{
+            isSubmissionWindow ? 'alarm_on' : 'alarm_off'
+          }}</mat-icon>
+          <div>
+            <h3>Fenêtre de soumission</h3>
+            <p>
+              {{
+                isSubmissionWindow
+                  ? "Vous pouvez soumettre votre CRA jusqu'au 28."
+                  : 'La soumission sera ouverte du 22 au 28 du mois.'
+              }}
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
