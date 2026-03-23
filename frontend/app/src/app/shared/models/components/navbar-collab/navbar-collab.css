@@ -1,0 +1,45 @@
+.navbar-collab {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  margin-right: 20px;
+}
+
+.active-link {
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid white;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  padding-left: 15px;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 300;
+}

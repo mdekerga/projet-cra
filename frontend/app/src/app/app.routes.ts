@@ -7,16 +7,17 @@ import { UserManagementComponent } from './features/user-management/user-managem
 import { adminGuard, authGuard } from './guards/auth.guard';
 import { AdminLayoutComponent } from './shared/models/components/admin-layout/admin-layout';
 import { MissionManagementComponent } from './features/mission-management/mission-management';
+import { NavbarCollabComponent } from './shared/models/components/navbar-collab/navbar-collab';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   {
     path: 'collab',
-    component: CollabDashboardComponent,
+    component: NavbarCollabComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: CollabDashboardComponent },
+      { path: 'dashboard', component: NavbarCollabComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

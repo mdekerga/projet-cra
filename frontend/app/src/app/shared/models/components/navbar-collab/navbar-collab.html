@@ -1,0 +1,33 @@
+<mat-toolbar color="primary" class="navbar-collab">
+  <div class="nav-brand">
+    <mat-icon>timer</mat-icon>
+    <span>CBX CRA</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <div class="nav-links">
+    <button mat-button routerLink="/collab/dashboard" routerLinkActive="active-link">
+      <mat-icon>dashboard</mat-icon>
+      Mon Espace
+    </button>
+
+    <button mat-button routerLink="/collab/my-cra" routerLinkActive="active-link">
+      <mat-icon>calendar_month</mat-icon>
+      Saisir mon CRA
+    </button>
+  </div>
+
+  <div class="user-section">
+    <span class="user-name">Alice Consultant</span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        <span>Déconnexion</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
