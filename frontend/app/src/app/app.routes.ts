@@ -9,16 +9,17 @@ import { AdminLayoutComponent } from './shared/models/components/admin-layout/ad
 import { MissionManagementComponent } from './features/mission-management/mission-management';
 import { NavbarCollabComponent } from './shared/models/components/navbar-collab/navbar-collab';
 import { CraSaisie } from './features/cra-saisie/cra-saisie';
+import { CollabLayout } from './shared/models/components/collab-layout/collab-layout';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   {
     path: 'collab',
-    component: NavbarCollabComponent,
+    component: CollabLayout,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: NavbarCollabComponent },
+      { path: 'dashboard', component: CollabDashboardComponent },
       { path: 'cra', component: CraSaisie },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
