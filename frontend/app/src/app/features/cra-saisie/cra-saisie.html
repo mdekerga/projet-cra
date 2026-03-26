@@ -24,27 +24,30 @@
   </div>
 
   <div class="calendar-grid">
-    <div
-      class="day-card"
-      *ngFor="let day of daysInMonth"
-      [ngClass]="{
-        weekend: day.isWeekend,
-        worked: day.type === 'WORKED',
-        absent: day.type === 'ABSENCE',
-      }"
-    >
-      <div class="day-number">{{ day.date | date: 'd' }}</div>
-      <div class="day-name">{{ day.date | date: 'EEEE' }}</div>
+    @for (day of daysInMonth; track day.date.getTime()) {
+      <div
+        class="day-card"
+        [ngClass]="{
+          weekend: day.isWeekend,
+          worked: day.type === 'WORKED',
+          absent: day.type === 'ABSENCE',
+        }"
+      >
+        <div class="day-number">{{ day.date | date: 'd' }}</div>
+        <div class="day-name">{{ day.date | date: 'EEEE' }}</div>
 
-      <div class="day-action" *ngIf="!day.isWeekend">
-        <mat-form-field appearance="outline">
-          <mat-select [(value)]="day.type" [disabled]="isReadOnly">
-            <mat-option value="WORKED">Mission</mat-option>
-            <mat-option value="ABSENCE">Congé / RTT</mat-option>
-            <mat-option value="SICK">Maladie</mat-option>
-          </mat-select>
-        </mat-form-field>
+        @if (!day.isWeekend) {
+          <div class="day-action">
+            <mat-form-field appearance="outline">
+              <mat-select [(value)]="day.type" [disabled]="isReadOnly">
+                <mat-option value="WORKED">Mission</mat-option>
+                <mat-option value="ABSENCE">Congé / RTT</mat-option>
+                <mat-option value="SICK">Maladie</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
 </div>

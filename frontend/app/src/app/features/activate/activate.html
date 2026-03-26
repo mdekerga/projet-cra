@@ -32,9 +32,9 @@
             [type]="hidePassword ? 'password' : 'text'"
             formControlName="confirmPassword"
           />
-          <mat-error *ngIf="activateForm.hasError('mismatch')">
-            Les mots de passe ne correspondent pas.
-          </mat-error>
+          @if (activateForm.hasError('mismatch')) {
+            <mat-error>Les mots de passe ne correspondent pas.</mat-error>
+          }
         </mat-form-field>
 
         <div class="actions">

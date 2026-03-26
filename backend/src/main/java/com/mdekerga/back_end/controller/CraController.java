@@ -5,6 +5,7 @@ import com.mdekerga.back_end.enums.EtatCRA;
 import com.mdekerga.back_end.service.CRAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -35,7 +36,7 @@ public class CraController {
     public ResponseEntity<?> submitCRA(@PathVariable Long id) {
         try {
             CRA submitted = craService.submitCRA(id);
-            return ResponseEntity.ok(submitted);
+            return ResponseEntity.ok(toCraResponse(submitted));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -53,5 +54,37 @@ public class CraController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/me/dashboard")
+    public ResponseEntity<?> getMyDashboard(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            return ResponseEntity.ok(craService.getCollaboratorDashboard(email));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/me/submit-current")
+    public ResponseEntity<?> submitMyCurrentMonthCra(Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            CRA submitted = craService.submitCurrentMonthForUser(email);
+            return ResponseEntity.ok(toCraResponse(submitted));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    private Map<String, Object> toCraResponse(CRA cra) {
+        return Map.of(
+                "id", cra.getCra_id(),
+                "month", cra.getMonth(),
+                "year", cra.getYear(),
+                "status", cra.getEtatCRA().name(),
+                "submittedAt", cra.getSubmittedAt(),
+                "rejectionReason", cra.getRejectionReason() == null ? "" : cra.getRejectionReason()
+        );
     }
 }

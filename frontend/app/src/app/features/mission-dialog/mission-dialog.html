@@ -45,18 +45,16 @@
     <mat-form-field appearance="outline">
       <mat-label>Assigner à...</mat-label>
       <mat-select formControlName="id">
-        <mat-option *ngFor="let user of users" [value]="user.id">
-          {{ user.firstName }} {{ user.lastName }}
-        </mat-option>
+        @for (user of users; track user.id) {
+          <mat-option [value]="user.id">{{ user.firstName }} {{ user.lastName }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="ref.close()">Annuler</button>
-    <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">
-      {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-    </button>
-  </mat-dialog-actions>
+  <button mat-button (click)="ref.close()">Annuler</button>
+  <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">
+    {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+  </button>
 </mat-dialog-actions>

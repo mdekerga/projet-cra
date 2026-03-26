@@ -4,6 +4,23 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { CraService } from '../../services/cra.service';
+
+type CraStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED';
+
+interface MissionSummary {
+  name: string;
+  client: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface CollabDashboardResponse {
+  firstName: string;
+  craStatus: CraStatus;
+  rejectionReason: string;
+  currentMission: MissionSummary | null;
+}
 
 @Component({
   selector: 'app-dashboard-collab',
@@ -14,22 +31,28 @@ import { RouterModule } from '@angular/router';
 })
 export class CollabDashboard implements OnInit {
   currentMonth = new Date();
-  craStatus: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' = 'DRAFT';
+  craStatus: CraStatus = 'DRAFT';
   rejectionReason = '';
   isSubmissionWindow = false;
+  firstName = '';
 
-  currentMission = {
-    name: 'Projet Cloud AWS',
-    client: 'Société Générale',
-    startDate: new Date(2026, 2, 1),
-    endDate: new Date(2026, 11, 31),
-  };
+  currentMission: MissionSummary | null = null;
+
+  constructor(private craService: CraService) {}
 
   ngOnInit() {
     const day = new Date().getDate();
     this.isSubmissionWindow = day >= 22 && day <= 28;
-    // Ici, vous feriez un appel API pour récupérer le vrai statut du CRA
-    this.craStatus = 'DRAFT';
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
+    this.craService.getMyDashboard().subscribe((data: CollabDashboardResponse) => {
+      this.firstName = data.firstName;
+      this.craStatus = data.craStatus;
+      this.rejectionReason = data.rejectionReason || '';
+      this.currentMission = data.currentMission;
+    });
   }
 
   getStatusClass() {

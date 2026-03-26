@@ -9,7 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -101,6 +104,48 @@ public class CRAService {
 
     public List<CRA> getCRAsByStatus(EtatCRA status) {
         return craRepository.findByEtatCRA(status);
+    }
+
+    public CRA submitCurrentMonthForUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Paris"));
+        int month = today.getMonthValue();
+        int year = today.getYear();
+
+        CRA cra = craRepository.findByUserIdAndMonthAndYear(user.getId(), month, year)
+                .orElseGet(() -> generateMonthlyCRA(user.getId(), month, year));
+
+        return submitCRA(cra.getCra_id());
+    }
+
+    public Map<String, Object> getCollaboratorDashboard(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        LocalDate today = LocalDate.now();
+        Optional<CRA> currentCra = craRepository.findByUserIdAndMonthAndYear(
+            user.getId(), today.getMonthValue(), today.getYear());
+
+        Mission currentMission = findActiveMission(assignmentRepository.findByUserId(user.getId()), today);
+
+        Map<String, Object> missionPayload = null;
+        if (currentMission != null) {
+            missionPayload = Map.of(
+                "name", currentMission.getName(),
+                "client", currentMission.getClient(),
+                "startDate", currentMission.getStart_date(),
+                "endDate", currentMission.getEnd_date()
+            );
+        }
+
+        Map<String, Object> dashboardPayload = new HashMap<>();
+        dashboardPayload.put("firstName", user.getFirst_name());
+        dashboardPayload.put("craStatus", currentCra.map(cra -> cra.getEtatCRA().name()).orElse(EtatCRA.DRAFT.name()));
+        dashboardPayload.put("rejectionReason", currentCra.map(CRA::getRejectionReason).orElse(""));
+        dashboardPayload.put("currentMission", missionPayload);
+        return dashboardPayload;
     }
 
     private Mission findActiveMission(List<Assignment> assignments, LocalDate date) {

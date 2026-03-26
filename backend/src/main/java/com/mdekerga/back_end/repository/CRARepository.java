@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -15,4 +16,6 @@ public interface CRARepository extends JpaRepository<CRA, Long> {
     boolean existsByUserIdAndMonthAndYear(Long userId, int month, int year);
     
     List<CRA> findByEtatCRA(EtatCRA etatCRA);
+
+    Optional<CRA> findByUserIdAndMonthAndYear(Long userId, int month, int year);
 }

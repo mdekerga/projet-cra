@@ -2,6 +2,7 @@ package com.mdekerga.back_end.entity;
 
 
 import com.mdekerga.back_end.enums.Activites;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class CraDay {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cra_id")
+    @JsonIgnore
     private CRA cra;
 
     @Column(nullable = false)

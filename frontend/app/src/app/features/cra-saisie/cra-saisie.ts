@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIcon } from '@angular/material/icon';
+import { CraService } from '../../services/cra.service';
 
 interface CraDay {
   date: Date;
@@ -22,6 +23,8 @@ export class CraSaisie implements OnInit {
   currentMonth = new Date();
   isSubmissionWindow = false;
   isReadOnly = false;
+
+  constructor(private craService: CraService) {}
 
   ngOnInit() {
     this.checkSubmissionWindow();
@@ -57,6 +60,15 @@ export class CraSaisie implements OnInit {
   }
 
   submitCra() {
-    console.log('Envoi du CRA au backend...', this.daysInMonth);
+    this.craService.submitMyCurrentMonthCra().subscribe({
+      next: () => {
+        this.isReadOnly = true;
+        alert('CRA soumis avec succès.');
+      },
+      error: (err) => {
+        const message = err?.error?.error || "Impossible de soumettre le CRA pour l'instant.";
+        alert(message);
+      },
+    });
   }
 }
