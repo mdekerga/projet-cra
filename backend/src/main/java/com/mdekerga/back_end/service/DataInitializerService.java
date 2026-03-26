@@ -83,6 +83,16 @@ public class DataInitializerService implements CommandLineRunner {
         assignmentRepository.save(a1);
 
 
+        Assignment a2 = new Assignment();
+        a2.setUser(colab2);
+        a2.setMission(m2);
+        assignmentRepository.save(a2);
+
+        Assignment a3 = new Assignment();
+        a3.setUser(colab2);
+        a3.setMission(m3);
+        assignmentRepository.save(a3);
+
 
         System.out.println("✅ Base de données peuplée avec succès !");
     }

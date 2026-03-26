@@ -54,4 +54,28 @@ public class CraController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload) {
+
+        String statusStr = payload.get("status");
+        String reason = payload.get("reason");
+
+        if (statusStr == null) {
+            return ResponseEntity.badRequest().body("Le champ 'status' est manquant");
+        }
+
+        try {
+            EtatCRA nouvelEtat = EtatCRA.valueOf(statusStr.toUpperCase());
+            CRA updated = craService.processAdminAction(id, nouvelEtat, reason);
+
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Statut invalide : " + statusStr);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -17,7 +17,8 @@ public class MissionDTO {
     @NotBlank(message = "Le titre est obligatoire")
     private String titre;
 
-    private String Client;
+    @NotBlank(message = "Une mission à toujours un client")
+    private String client;
 
     @NotNull(message = "La date de début est obligatoire")
     private LocalDate dateDebut;
@@ -29,4 +30,8 @@ public class MissionDTO {
 
     @Positive(message = "Le TJM doit être supérieur à 0")
     private BigDecimal tjm;
+
+    private Long assignedUserId;
+
+    private String assignedUserName;
 }

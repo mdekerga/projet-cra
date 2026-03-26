@@ -47,4 +47,6 @@ public class User {
 
     @Column(name="salaire")
     private BigDecimal salaire;
+
+
 }

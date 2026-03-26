@@ -17,4 +17,12 @@ export class CraService {
   submitCRA(craId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${craId}/submit`, {});
   }
+
+  getPendingCras(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/pending`);
+  }
+
+  updateStatus(id: number, status: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/status`, { status });
+  }
 }
