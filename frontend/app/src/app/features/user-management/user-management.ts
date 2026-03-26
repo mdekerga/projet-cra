@@ -33,7 +33,6 @@ export class UserManagementComponent implements OnInit {
 
   dataSource: User[] = [];
 
-  isLoading: boolean = true;
   errorMessage: string = '';
 
   constructor(
@@ -46,21 +45,18 @@ export class UserManagementComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.isLoading = true;
     this.errorMessage = '';
 
-    this.userService
-      .getAllUsers()
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (data) => {
-          this.dataSource = data;
-        },
-        error: (err) => {
-          console.error('Erreur lors du chargement', err);
-          this.errorMessage = 'Impossible de charger les utilisateurs. Vérifiez la connexion.';
-        },
-      });
+    this.userService.getAllUsers().subscribe({
+      next: (data) => {
+        this.dataSource = data;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des utilisateurs', err);
+        this.errorMessage =
+          'Impossible de charger les utilisateurs. Vérifiez la connexion au backend.';
+      },
+    });
   }
 
   openAddUserDialog(): void {

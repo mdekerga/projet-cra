@@ -1,43 +1,61 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>Validation des CRA en attente</h3>
-    <span class="badge bg-primary">{{ pendingCRAs.length }} à traiter</span>
+<div class="dashboard-container">
+  <h2>Tableau de bord Administrateur</h2>
+
+  <mat-card class="alert-card" [ngClass]="{ 'active-window': isSubmissionWindow }">
+    <mat-card-content>
+      <strong>Statut de la période :</strong>
+      {{
+        isSubmissionWindow
+          ? 'Fenêtre de saisie ouverte (22-28)'
+          : 'Hors fenêtre de saisie officielle'
+      }}
+    </mat-card-content>
+  </mat-card>
+
+  <div class="stats-grid">
+    <mat-card class="stat-item">
+      <mat-card-subtitle>Collaborateurs</mat-card-subtitle>
+      <mat-card-title>{{ stats.totalCollabs }}</mat-card-title>
+    </mat-card>
+    <mat-card class="stat-item highlight">
+      <mat-card-subtitle>CRA à valider</mat-card-subtitle>
+      <mat-card-title>{{ pendingCras.length }}</mat-card-title>
+    </mat-card>
+    <mat-card class="stat-item">
+      <mat-card-subtitle>En Intercontrat</mat-card-subtitle>
+      <mat-card-title>{{ stats.intercontratCount }}</mat-card-title>
+    </mat-card>
   </div>
 
-  <div *ngIf="pendingCRAs.length === 0" class="alert alert-info shadow-sm">
-    Aucun CRA en attente de validation pour le moment.
-  </div>
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>CRA en attente de validation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="pendingCras">
+        <ng-container matColumnDef="collaborator">
+          <th mat-header-cell *mat-header-cellDef>Collaborateur</th>
+          <td mat-cell *mat-cellDef="let cra">{{ cra.user.firstName }} {{ cra.user.lastName }}</td>
+        </ng-container>
 
-  <div class="row" *ngIf="pendingCRAs.length > 0">
-    <div class="col-12">
-      <table class="table table-hover align-middle bg-white shadow-sm rounded">
-        <thead class="table-light">
-          <tr>
-            <th>Collaborateur</th>
-            <th>Période</th>
-            <th>Date d'envoi</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let cra of pendingCRAs">
-            <td>
-              <div class="fw-bold">{{ cra.user?.lastName }} {{ cra.user?.firstName }}</div>
-              <small class="text-muted">{{ cra.user?.email }}</small>
-            </td>
-            <td>{{ cra.month }}/{{ cra.year }}</td>
-            <td>{{ cra.submittedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
-            <td class="text-center">
-              <button (click)="onApprove(cra.id)" class="btn btn-sm btn-success me-2">
-                Approuver
-              </button>
-              <button (click)="onReject(cra.id)" class="btn btn-sm btn-outline-danger">
-                Rejeter
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        <ng-container matColumnDef="month">
+          <th mat-header-cell *mat-header-cellDef>Mois</th>
+          <td mat-cell *mat-cellDef="let cra">{{ cra.month | date: 'MMMM yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *mat-header-cellDef>Actions</th>
+          <td mat-cell *mat-cellDef="let cra">
+            <button mat-button color="primary" (click)="viewCra(cra.id)">Détails</button>
+            <button mat-icon-button color="accent" (click)="approve(cra.id)">
+              <mat-icon>check</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *mat-header-rowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-    </div>
-  </div>
+    </mat-card-content>
+  </mat-card>
 </div>

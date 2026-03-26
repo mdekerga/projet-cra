@@ -1,48 +1,43 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminCraService } from '../../services/admin-cra.service';
-import { CRA } from '../../shared/models/cra.model';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-dashboard',
-  templateUrl: './admin-dashboard.html',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatIconModule],
+  templateUrl: './admin-dashboard.html',
   styleUrls: ['./admin-dashboard.css'],
 })
 export class AdminDashboardComponent implements OnInit {
-  pendingCRAs: CRA[] = [];
-  rejectionReason: string = '';
-  selectedCraId: number | null = null;
+  isSubmissionWindow = false;
+  displayedColumns: string[] = ['collaborator', 'month', 'actions'];
+  pendingCras: any[] = [];
+  stats = { totalCollabs: 0, intercontratCount: 0 };
 
-  constructor(private adminCraService: AdminCraService) {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
-    this.loadPendingCRAs();
+  ngOnInit() {
+    const today = new Date().getDate();
+    this.isSubmissionWindow = today >= 22 && today <= 28;
+    this.loadDashboardData();
   }
 
-  loadPendingCRAs() {
-    this.adminCraService.getSubmittedCRAs().subscribe((data) => {
-      this.pendingCRAs = data;
-    });
+  loadDashboardData() {
+    this.stats = { totalCollabs: 12, intercontratCount: 2 };
+    this.pendingCras = [
+      { id: 101, user: { firstName: 'Alice', lastName: 'Martin' }, month: new Date() },
+    ];
+    this.cdr.detectChanges();
   }
 
-  onApprove(id: number) {
-    if (confirm("Approuver ce compte rendu d'activité ?")) {
-      this.adminCraService.processCRA(id, true).subscribe(() => {
-        this.loadPendingCRAs(); // Rafraîchir la liste
-      });
-    }
+  viewCra(id: number) {
+    console.log('Détails:', id);
   }
-
-  onReject(id: number) {
-    const reason = prompt('Motif du rejet (obligatoire) :');
-    if (reason && reason.trim().length > 0) {
-      this.adminCraService.processCRA(id, false, reason).subscribe(() => {
-        this.loadPendingCRAs();
-      });
-    } else if (reason !== null) {
-      alert('Le motif est obligatoire pour rejeter un CRA.');
-    }
+  approve(id: number) {
+    console.log('Approuvé:', id);
   }
 }

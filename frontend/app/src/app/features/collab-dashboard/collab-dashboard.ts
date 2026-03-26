@@ -1,66 +1,43 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Pour ngIf, ngClass, pipes
-import { RouterModule } from '@angular/router'; // Pour routerLink
-
-// Imports Angular Material
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-
-import { CraService } from '../../services/cra.service';
-import { CRA } from '../../shared/models/cra.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-collab-dashboard',
+  selector: 'app-dashboard-collab',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-  ],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, RouterModule],
   templateUrl: './collab-dashboard.html',
   styleUrls: ['./collab-dashboard.css'],
 })
-export class CraDashboardComponent implements OnInit {
-  currentCra: CRA | null = null;
-  craHistory: CRA[] = [];
-  currentMonthName: string = '';
-  currentYear: number = new Date().getFullYear();
+export class CollabDashboard implements OnInit {
+  currentMonth = new Date();
+  craStatus: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' = 'DRAFT';
+  rejectionReason = '';
+  isSubmissionWindow = false;
 
-  stats = { workDays: 0, offDays: 0 };
+  currentMission = {
+    name: 'Projet Cloud AWS',
+    client: 'Société Générale',
+    startDate: new Date(2026, 2, 1),
+    endDate: new Date(2026, 11, 31),
+  };
 
-  constructor(private craService: CraService) {}
-
-  ngOnInit(): void {
-    const now = new Date();
-    this.currentMonthName = now.toLocaleString('fr-FR', { month: 'long' });
-
-    const userId = 1;
-
-    this.craService.getCraByMonth(userId, now.getMonth() + 1, now.getFullYear()).subscribe({
-      next: (cra) => {
-        this.currentCra = cra;
-        this.calculateStats();
-      },
-      error: (err) => console.error('Erreur chargement CRA', err),
-    });
-
-    this.craService.getUserHistory(userId).subscribe((history) => {
-      this.craHistory = history;
-    });
+  ngOnInit() {
+    const day = new Date().getDate();
+    this.isSubmissionWindow = day >= 22 && day <= 28;
+    // Ici, vous feriez un appel API pour récupérer le vrai statut du CRA
+    this.craStatus = 'DRAFT';
   }
 
-  private calculateStats(): void {
-    if (!this.currentCra) return;
-    this.stats.workDays = this.currentCra.entries.filter((e) =>
-      ['MISSION', 'INTERCONTRAT'].includes(e.type),
-    ).length;
-    this.stats.offDays = this.currentCra.entries.filter((e) =>
-      ['CONGE', 'RTT', 'MALADIE'].includes(e.type),
-    ).length;
+  getStatusClass() {
+    return {
+      'status-draft': this.craStatus === 'DRAFT',
+      'status-submitted': this.craStatus === 'SUBMITTED',
+      'status-approved': this.craStatus === 'APPROVED',
+      'status-rejected': this.craStatus === 'REJECTED',
+    };
   }
 }

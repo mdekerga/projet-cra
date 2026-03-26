@@ -6,15 +6,21 @@
       <input matInput formControlName="clientName" />
     </mat-form-field>
 
+    <mat-form-field appearance="outline">
+      <mat-label>Titre de la mission</mat-label>
+      <input matInput formControlName="titre" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
     <div class="d-flex gap-2">
-      <mat-form-field appearance="outline">
-        <mat-label>Début</mat-label>
-        <input matInput type="date" formControlName="startDate" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Fin</mat-label>
-        <input matInput type="date" formControlName="endDate" />
-      </mat-form-field>
+      <input matInput [matDatepicker]="picker" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </div>
 
     <mat-form-field appearance="outline">
@@ -28,8 +34,10 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="ref.close()">Annuler</button>
-  <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">
-    Créer
-  </button>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="ref.close()">Annuler</button>
+    <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">
+      {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+    </button>
+  </mat-dialog-actions>
 </mat-dialog-actions>

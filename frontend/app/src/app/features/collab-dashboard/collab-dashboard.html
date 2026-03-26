@@ -1,59 +1,71 @@
 <div class="dashboard-container">
-  <h1>Mon Espace CRA</h1>
+  <header class="welcome-section">
+    <h1>Bonjour, Alice ! 👋</h1>
+    <p class="mat-body-1">
+      Voici le récapitulatif de votre activité pour le mois de
+      {{ currentMonth | date: 'MMMM yyyy' }}
+    </p>
+  </header>
 
-  <mat-card class="current-month-card" [ngClass]="currentCra?.status">
-    <mat-card-header>
-      <mat-card-title>Mois en cours : {{ currentMonthName }} {{ currentYear }}</mat-card-title>
-      <mat-card-subtitle
-        >Statut : <strong>{{ currentCra?.status || 'NON GÉNÉRÉ' }}</strong></mat-card-subtitle
-      >
-    </mat-card-header>
+  <div class="dashboard-grid">
+    <mat-card class="status-card" [ngClass]="getStatusClass()">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>assignment</mat-icon>
+        <mat-card-title>Statut de mon CRA</mat-card-title>
+        <mat-card-subtitle>Mois en cours</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="status-content">
+        <div class="status-badge">{{ craStatus }}</div>
+        <p *ngIf="craStatus === 'REJECTED'" class="rejection-msg">
+          <strong>Motif du rejet :</strong> {{ rejectionReason }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button color="primary" routerLink="/collab/cra-saisie">
+          <mat-icon>edit</mat-icon>
+          {{
+            craStatus === 'DRAFT' || craStatus === 'REJECTED' ? 'Saisir / Modifier' : 'Consulter'
+          }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
 
-    <mat-card-content>
-      <div *ngIf="currentCra?.status === 'REJECTED'" class="alert-rejection">
-        <mat-icon>warning</mat-icon>
-        <span>Motif du rejet : {{ currentCra?.rejectionReason }}</span>
-      </div>
+    <mat-card class="mission-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>business</mat-icon>
+        <mat-card-title>Mission Actuelle</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <h3 class="mission-name">{{ currentMission?.name || 'En Intercontrat' }}</h3>
+        <p class="client-name" *ngIf="currentMission">{{ currentMission?.client }}</p>
+        <div class="mission-period">
+          <mat-icon inline>calendar_today</mat-icon>
+          <span
+            >Du {{ currentMission?.startDate | date: 'shortDate' }} au
+            {{ currentMission?.endDate | date: 'shortDate' }}</span
+          >
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-      <div class="stats-row">
-        <div class="stat"><span>Travail :</span> {{ stats.workDays }}j</div>
-        <div class="stat"><span>Congés/RTT :</span> {{ stats.offDays }}j</div>
-      </div>
-    </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-flat-button color="primary" [routerLink]="['/cra/edit', currentCra?.id]">
-        {{ currentCra?.status === 'APPROVED' ? 'Consulter' : 'Saisir mon temps' }}
-      </button>
-    </mat-card-actions>
-  </mat-card>
-
-  <section class="history-section">
-    <h3>Historique des mois précédents</h3>
-    <table mat-table [dataSource]="craHistory" class="mat-elevation-z2">
-      <ng-container matColumnDef="period">
-        <th mat-header-cell *matHeaderCellDef>Période</th>
-        <td mat-cell *matCellDef="let cra">{{ cra.month }}/{{ cra.year }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Statut</th>
-        <td mat-cell *matCellDef="let cra">
-          <span class="status-badge" [attr.data-status]="cra.status">{{ cra.status }}</span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let cra">
-          <button mat-icon-button [routerLink]="['/cra/view', cra.id]">
-            <mat-icon>visibility</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="['period', 'status', 'actions']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['period', 'status', 'actions']"></tr>
-    </table>
-  </section>
+    <mat-card class="window-card" [ngClass]="{ active: isSubmissionWindow }">
+      <mat-card-content>
+        <div class="window-info">
+          <mat-icon class="window-icon">{{
+            isSubmissionWindow ? 'alarm_on' : 'alarm_off'
+          }}</mat-icon>
+          <div>
+            <h3>Fenêtre de soumission</h3>
+            <p>
+              {{
+                isSubmissionWindow
+                  ? "Vous pouvez soumettre votre CRA jusqu'au 28."
+                  : 'La soumission sera ouverte du 22 au 28 du mois.'
+              }}
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

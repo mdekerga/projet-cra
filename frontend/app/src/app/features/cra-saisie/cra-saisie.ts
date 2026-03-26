@@ -1,40 +1,62 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+
+interface CraDay {
+  date: Date;
+  type: 'WORKED' | 'ABSENCE' | 'SICK' | 'EMPTY';
+  isWeekend: boolean;
+}
 
 @Component({
-  selector: 'app-cra-saisie',
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  selector: 'app-my-cra',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, MatSelectModule, MatIcon],
   templateUrl: './cra-saisie.html',
-  styleUrl: './cra-saisie.css',
+  styleUrls: ['./cra-saisie.css'],
 })
 export class CraSaisie implements OnInit {
-  weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-  monthDays: any[] = [];
-  totalWorkedDays = 0;
+  daysInMonth: CraDay[] = [];
+  currentMonth = new Date();
+  isSubmissionWindow = false;
+  isReadOnly = false;
 
   ngOnInit() {
+    this.checkSubmissionWindow();
     this.generateCalendar();
   }
 
+  checkSubmissionWindow() {
+    const day = new Date().getDate();
+    this.isSubmissionWindow = day >= 22 && day <= 28;
+  }
+
   generateCalendar() {
-    for (let i = 1; i <= 31; i++) {
-      this.monthDays.push({ day: i, isWorked: true, isWeekend: i % 7 == 0 || i % 7 == 6 });
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    const numDays = new Date(year, month + 1, 0).getDate();
+
+    this.daysInMonth = [];
+    for (let i = 1; i <= numDays; i++) {
+      const date = new Date(year, month, i);
+      const dayOfWeek = date.getDay();
+      this.daysInMonth.push({
+        date: date,
+        type: 'EMPTY',
+        isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
+      });
     }
-    this.calculateTotal();
   }
 
-  toggleDay(date: any) {
-    if (date.isWeekend) return;
-    date.isWorked = !date.isWorked;
-    this.calculateTotal();
+  fillFullMonth() {
+    this.daysInMonth.forEach((day) => {
+      if (!day.isWeekend) day.type = 'WORKED';
+    });
   }
 
-  calculateTotal() {
-    this.totalWorkedDays = this.monthDays.filter((d) => d.isWorked && !d.isWeekend).length;
-  }
-  submitCRA() {
-    console.log('CRA envoyé !');
+  submitCra() {
+    console.log('Envoi du CRA au backend...', this.daysInMonth);
   }
 }

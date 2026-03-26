@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { UserService } from '../../services/user.service';
 import { User } from '../../shared/models/user.model';
 import { MissionService } from '../../services/mission.service';
@@ -8,7 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   standalone: true,
@@ -19,33 +20,50 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatDatepickerModule,
     MatButtonModule,
   ],
-  templateUrl: 'mission-dialog.html',
+  templateUrl: './mission-dialog.html',
 })
 export class MissionDialogComponent implements OnInit {
   form: FormGroup;
   users: User[] = [];
+  isEditMode = false;
 
   constructor(
     private fb: FormBuilder,
     public ref: MatDialogRef<MissionDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private userService: UserService,
     private missionService: MissionService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
       clientName: ['', Validators.required],
+      titre: ['', Validators.required],
+      description: [''],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       assignedUserId: [null, Validators.required],
     });
+
+    if (this.data && this.data.mission) {
+      this.isEditMode = true;
+      this.form.patchValue(this.data.mission);
+    }
   }
 
   ngOnInit() {
-    this.userService.getAllUsers().subscribe((data) => (this.users = data.filter((u) => u.active)));
+    this.userService.getAllUsers().subscribe((data) => {
+      this.users = data.filter((u) => u.active);
+
+      this.cdr.detectChanges();
+    });
   }
 
   save() {
-    this.missionService.create(this.form.value).subscribe(() => this.ref.close(true));
+    if (this.form.valid) {
+      this.missionService.create(this.form.value).subscribe(() => this.ref.close(true));
+    }
   }
 }
