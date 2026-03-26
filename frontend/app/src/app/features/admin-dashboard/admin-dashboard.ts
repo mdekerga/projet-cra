@@ -4,9 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AdminCraService } from '../../services/admin-cra.service';
+import { AdminCraService, AdminSubmittedCra } from '../../services/admin-cra.service';
 import { UserService } from '../../services/user.service';
-import { CRA } from '../../shared/models/cra.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -18,7 +17,7 @@ import { CRA } from '../../shared/models/cra.model';
 export class AdminDashboardComponent implements OnInit {
   isSubmissionWindow = false;
   displayedColumns: string[] = ['collaborator', 'month', 'actions'];
-  pendingCras: CRA[] = [];
+  pendingCras: AdminSubmittedCra[] = [];
   stats = { totalCollabs: 0, intercontratCount: 0 };
 
   constructor(
@@ -51,7 +50,7 @@ export class AdminDashboardComponent implements OnInit {
     console.log('Détails:', id);
   }
 
-  getCraMonthLabel(cra: CRA): string {
+  getCraMonthLabel(cra: AdminSubmittedCra): string {
     if (!cra?.month || !cra?.year) {
       return '-';
     }

@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/admin/cras")
@@ -24,7 +26,7 @@ public class AdminController {
     public ResponseEntity<?> getSubmittedCRAs() {
         try {
             List<CRA> submitted = craService.getCRAsByStatus(EtatCRA.SUBMITTED);
-            return ResponseEntity.ok(submitted);
+            return ResponseEntity.ok(submitted.stream().map(this::toSubmittedCraResponse).toList());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -40,9 +42,37 @@ public class AdminController {
             EtatCRA action = approved ? EtatCRA.APPROVED : EtatCRA.REJECTED;
             
             CRA updated = craService.processAdminAction(id, action, reason);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(toSubmittedCraResponse(updated));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    private Map<String, Object> toSubmittedCraResponse(CRA cra) {
+        String firstName = cra.getUser() != null ? cra.getUser().getFirst_name() : "";
+        String lastName = cra.getUser() != null ? cra.getUser().getLast_name() : "";
+
+        String missionName = cra.getDays().stream()
+                .map(day -> day.getMission() != null ? day.getMission().getName() : null)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse("Intercontrat");
+
+        double totalDays = cra.getDays().stream()
+                .mapToDouble(day -> day.getDuration())
+                .sum();
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("id", cra.getCra_id());
+        response.put("month", cra.getMonth());
+        response.put("year", cra.getYear());
+        response.put("status", cra.getEtatCRA().name());
+        response.put("rejectionReason", cra.getRejectionReason() == null ? "" : cra.getRejectionReason());
+        response.put("submittedAt", cra.getSubmittedAt());
+        response.put("collaboratorFirstName", firstName);
+        response.put("collaboratorLastName", lastName);
+        response.put("mission", missionName);
+        response.put("totalDays", totalDays);
+        return response;
     }
 }

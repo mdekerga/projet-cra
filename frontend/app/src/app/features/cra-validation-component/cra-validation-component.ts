@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AdminCraService, AdminSubmittedCra } from '../../services/admin-cra.service';
 
 @Component({
   selector: 'app-cra-validation',
@@ -23,38 +24,59 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 export class CraValidationComponent implements OnInit {
   displayedColumns: string[] = ['collaborator', 'period', 'mission', 'days', 'actions'];
 
-  pendingCRAs = [
-    { id: 1, userName: 'Jean Dupont', month: 'Mars 2026', mission: 'DevOps API', totalDays: 21 },
-    {
-      id: 2,
-      userName: 'Alice Martin',
-      month: 'Mars 2026',
-      mission: 'Migration Cloud',
-      totalDays: 19,
-    },
-    {
-      id: 3,
-      userName: 'Marc Durand',
-      month: 'Février 2026',
-      mission: 'Audit Sécurité',
-      totalDays: 20,
-    },
-  ];
+  pendingCRAs: AdminSubmittedCra[] = [];
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private adminCraService: AdminCraService,
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadSubmittedCRAs();
+  }
+
+  loadSubmittedCRAs(): void {
+    this.adminCraService.getSubmittedCRAs().subscribe({
+      next: (cras) => {
+        this.pendingCRAs = cras;
+      },
+      error: () => {
+        this.snackBar.open('Impossible de charger les CRA à valider.', 'Fermer', {
+          duration: 3000,
+        });
+      },
+    });
+  }
+
+  getPeriodLabel(cra: AdminSubmittedCra): string {
+    const monthDate = new Date(cra.year, cra.month - 1, 1);
+    return monthDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  }
 
   approveCRA(id: number): void {
-    this.pendingCRAs = this.pendingCRAs.filter((cra) => cra.id !== id);
-    this.snackBar.open('CRA approuvé avec succès !', 'Fermer', { duration: 3000 });
+    this.adminCraService.processCRA(id, true).subscribe({
+      next: () => {
+        this.pendingCRAs = this.pendingCRAs.filter((cra) => cra.id !== id);
+        this.snackBar.open('CRA approuvé avec succès !', 'Fermer', { duration: 3000 });
+      },
+      error: () => {
+        this.snackBar.open("Impossible d'approuver ce CRA.", 'Fermer', { duration: 3000 });
+      },
+    });
   }
 
   rejectCRA(id: number): void {
     const reason = prompt('Motif du refus :');
     if (reason) {
-      this.pendingCRAs = this.pendingCRAs.filter((cra) => cra.id !== id);
-      this.snackBar.open('CRA renvoyé pour modification.', 'Fermer', { duration: 3000 });
+      this.adminCraService.processCRA(id, false, reason).subscribe({
+        next: () => {
+          this.pendingCRAs = this.pendingCRAs.filter((cra) => cra.id !== id);
+          this.snackBar.open('CRA renvoyé pour modification.', 'Fermer', { duration: 3000 });
+        },
+        error: () => {
+          this.snackBar.open('Impossible de refuser ce CRA.', 'Fermer', { duration: 3000 });
+        },
+      });
     }
   }
 }

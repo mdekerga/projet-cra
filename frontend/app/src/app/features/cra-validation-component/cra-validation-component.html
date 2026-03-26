@@ -14,13 +14,13 @@
       <ng-container matColumnDef="collaborator">
         <th mat-header-cell *matHeaderCellDef>Collaborateur</th>
         <td mat-cell *matCellDef="let cra">
-          <strong>{{ cra.userName }}</strong>
+          <strong>{{ cra.collaboratorFirstName }} {{ cra.collaboratorLastName }}</strong>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="period">
         <th mat-header-cell *matHeaderCellDef>Période</th>
-        <td mat-cell *matCellDef="let cra">{{ cra.month }}</td>
+        <td mat-cell *matCellDef="let cra">{{ getPeriodLabel(cra) }}</td>
       </ng-container>
 
       <ng-container matColumnDef="mission">
