@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { User } from '../../shared/models/user.model';
 import { UserService } from '../../services/user.service';
 
@@ -28,6 +29,7 @@ export interface DialogData {
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatSlideToggleModule,
   ],
   templateUrl: './user-dialog.html',
   styleUrl: './user-dialog.css',
@@ -57,6 +59,7 @@ export class UserDialogComponent implements OnInit {
         [Validators.required, Validators.email],
       ],
       role: [this.data.user?.role || 'COLLABORATEUR', Validators.required],
+      active: [this.data.user?.active ?? false],
     });
   }
 

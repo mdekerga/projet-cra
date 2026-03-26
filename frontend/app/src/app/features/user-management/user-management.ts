@@ -102,4 +102,18 @@ export class UserManagementComponent implements OnInit {
       });
     }
   }
+
+  deleteUser(user: User): void {
+    if (!user.id) {
+      return;
+    }
+
+    const confirmed = confirm(`Supprimer ${user.firstName} ${user.lastName} ?`);
+    if (confirmed) {
+      this.userService.deleteUser(user.id).subscribe({
+        next: () => this.loadUsers(),
+        error: (err) => console.error('Erreur de suppression', err),
+      });
+    }
+  }
 }

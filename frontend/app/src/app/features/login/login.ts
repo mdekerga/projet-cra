@@ -55,7 +55,11 @@ export class LoginComponent {
         },
         error: (err) => {
           this.loading = false;
-          this.errorMessage = 'Identifiants invalides ou compte désactivé.';
+          if (err.status === 403) {
+            this.errorMessage = 'Compte désactivé / accès interdit';
+          } else {
+            this.errorMessage = 'Identifiants invalides.';
+          }
         },
       });
     }

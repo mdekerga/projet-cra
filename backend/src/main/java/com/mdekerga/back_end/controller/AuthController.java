@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,9 +44,11 @@ public class AuthController {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid email or password"));
+        }
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
@@ -68,9 +71,12 @@ public class AuthController {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        // On encode le nouveau mot de passe
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        // On active le compte
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode("Temp1234!"));
+        } else {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         user.setActive(true);
 
         userRepository.save(user);

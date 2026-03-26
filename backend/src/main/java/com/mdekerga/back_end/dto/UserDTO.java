@@ -27,6 +27,8 @@ public class UserDTO {
     @NotBlank(message = "L'email est obligatoire")
     private String email;
 
+    private String password;
+
     private boolean active;
     private Role role;
     private Statut statut;

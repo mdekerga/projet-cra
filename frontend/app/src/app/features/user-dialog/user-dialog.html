@@ -52,6 +52,10 @@
       </mat-select>
     </mat-form-field>
 
+    <div class="mb-3">
+      <mat-slide-toggle formControlName="active" color="primary"> Compte actif </mat-slide-toggle>
+    </div>
+
     <div *ngIf="!isEditMode" class="alert alert-info shadow-sm d-flex align-items-center">
       <mat-icon class="me-2">info</mat-icon>
       <span

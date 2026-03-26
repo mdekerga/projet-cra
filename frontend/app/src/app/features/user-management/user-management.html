@@ -69,6 +69,9 @@
             >
               <mat-icon>{{ user.active ? 'lock' : 'lock_open' }}</mat-icon>
             </button>
+            <button mat-icon-button color="warn" matTooltip="Supprimer" (click)="deleteUser(user)">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </td>
       </ng-container>

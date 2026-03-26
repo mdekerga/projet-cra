@@ -47,4 +47,10 @@ public class UserController {
     public void toggleActivation(@PathVariable Long id, @RequestParam boolean active) {
         userService.changeActivationStatus(id, active);
     }
+
+    @PatchMapping("/{id}/toggle-status")
+    public void toggleUserStatus(@PathVariable Long id) {
+        UserDTO user = userService.findById(id);
+        userService.changeActivationStatus(id, !user.isActive());
+    }
 }
