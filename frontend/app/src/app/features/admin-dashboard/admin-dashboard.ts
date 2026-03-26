@@ -4,6 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AdminCraService } from '../../services/admin-cra.service';
+import { UserService } from '../../services/user.service';
+import { CRA } from '../../shared/models/cra.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,10 +18,14 @@ import { MatIconModule } from '@angular/material/icon';
 export class AdminDashboardComponent implements OnInit {
   isSubmissionWindow = false;
   displayedColumns: string[] = ['collaborator', 'month', 'actions'];
-  pendingCras: any[] = [];
+  pendingCras: CRA[] = [];
   stats = { totalCollabs: 0, intercontratCount: 0 };
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private adminCraService: AdminCraService,
+    private userService: UserService,
+  ) {}
 
   ngOnInit() {
     const today = new Date().getDate();
@@ -27,17 +34,35 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadDashboardData() {
-    this.stats = { totalCollabs: 12, intercontratCount: 2 };
-    this.pendingCras = [
-      { id: 101, user: { firstName: 'Alice', lastName: 'Martin' }, month: new Date() },
-    ];
-    this.cdr.detectChanges();
+    // Charger les utilisateurs et les CRA soumis en parallèle
+    this.userService.getAllUsers().subscribe((users) => {
+      this.stats.totalCollabs = users.length;
+      this.stats.intercontratCount = users.filter((u) => u.statut === 'INTERCONTRAT').length;
+      this.cdr.detectChanges();
+    });
+
+    this.adminCraService.getSubmittedCRAs().subscribe((cras) => {
+      this.pendingCras = cras;
+      this.cdr.detectChanges();
+    });
   }
 
   viewCra(id: number) {
     console.log('Détails:', id);
   }
+
+  getCraMonthLabel(cra: CRA): string {
+    if (!cra?.month || !cra?.year) {
+      return '-';
+    }
+
+    const monthDate = new Date(cra.year, cra.month - 1, 1);
+    return monthDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  }
+
   approve(id: number) {
-    console.log('Approuvé:', id);
+    this.adminCraService.processCRA(id, true).subscribe(() => {
+      this.loadDashboardData();
+    });
   }
 }

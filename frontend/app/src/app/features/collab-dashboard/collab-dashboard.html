@@ -36,13 +36,13 @@
         <mat-card-title>Mission Actuelle</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <h3 class="mission-name">{{ currentMission?.name || 'En Intercontrat' }}</h3>
-        <p class="client-name" *ngIf="currentMission">{{ currentMission?.client }}</p>
+        <h3 class="mission-name">{{ currentMission.name || 'En Intercontrat' }}</h3>
+        <p class="client-name" *ngIf="currentMission">{{ currentMission.client }}</p>
         <div class="mission-period">
           <mat-icon inline>calendar_today</mat-icon>
           <span
-            >Du {{ currentMission?.startDate | date: 'shortDate' }} au
-            {{ currentMission?.endDate | date: 'shortDate' }}</span
+            >Du {{ currentMission.startDate | date: 'shortDate' }} au
+            {{ currentMission.endDate | date: 'shortDate' }}</span
           >
         </div>
       </mat-card-content>

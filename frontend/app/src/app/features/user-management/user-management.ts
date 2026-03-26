@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatTableModule } from '@angular/material/table';
@@ -56,6 +56,7 @@ export class UserManagementComponent implements OnInit {
         console.error('Erreur lors du chargement des utilisateurs', err);
         this.errorMessage =
           'Impossible de charger les utilisateurs. Vérifiez la connexion au backend.';
+        this.cdr.detectChanges();
       },
     });
   }

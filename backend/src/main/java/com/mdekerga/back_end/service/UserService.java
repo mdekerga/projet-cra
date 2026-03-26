@@ -6,6 +6,7 @@ import com.mdekerga.back_end.enums.Statut;
 import com.mdekerga.back_end.exception.ResourceNotFoundException;
 import com.mdekerga.back_end.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +27,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Override

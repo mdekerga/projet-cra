@@ -11,12 +11,11 @@ export class MissionService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Mission[]> {
-    console.table(this.http.get<Mission[]>(this.apiUrl));
     return this.http.get<Mission[]>(this.apiUrl);
   }
 
   create(mission: Mission): Observable<Mission> {
-    return this.http.post<Mission>(`${this.apiUrl}/create`, mission);
+    return this.http.post<Mission>(this.apiUrl, mission);
   }
 
   update(id: number, mission: Mission): Observable<Mission> {

@@ -34,12 +34,12 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
 
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/cras/**").hasAnyAuthority("ADMIN","COLLABORATOR")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/cras/**").hasAnyRole("ADMIN","COLLABORATOR")
                 .anyRequest().authenticated()
         )
 

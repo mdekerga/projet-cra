@@ -99,6 +99,10 @@ public class CRAService {
         return craRepository.save(cra);
     }
 
+    public List<CRA> getCRAsByStatus(EtatCRA status) {
+        return craRepository.findByEtatCRA(status);
+    }
+
     private Mission findActiveMission(List<Assignment> assignments, LocalDate date) {
         return assignments.stream()
                 .filter(a -> !date.isBefore(a.getStartDate()) &&

@@ -18,6 +18,7 @@ export class AuthService {
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap((res) => {
+        console.log('[AuthService] Login successful, role:', res.role);
         localStorage.setItem('token', res.token);
         this.currentUserSubject.next(this.decodeToken(res.token));
       }),
@@ -25,17 +26,21 @@ export class AuthService {
   }
 
   logout() {
+    console.log('[AuthService] Logout');
     localStorage.removeItem('token');
     this.currentUserSubject.next(null);
   }
 
   private decodeToken(token: string) {
     const decoded: any = jwtDecode(token);
+    console.log('[AuthService] Token decoded:', { sub: decoded.sub, role: decoded.role });
     return { email: decoded.sub, role: decoded.role };
   }
 
   getRole(): string | null {
-    return this.currentUserSubject.value?.role || null;
+    const role = this.currentUserSubject.value?.role || null;
+    console.log('[AuthService] getRole called, returning:', role);
+    return role;
   }
 
   isAuthenticated(): boolean {

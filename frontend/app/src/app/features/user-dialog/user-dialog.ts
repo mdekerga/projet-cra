@@ -58,7 +58,7 @@ export class UserDialogComponent implements OnInit {
         { value: this.data.user?.email || '', disabled: this.isEditMode },
         [Validators.required, Validators.email],
       ],
-      role: [this.data.user?.role || 'COLLABORATEUR', Validators.required],
+      role: [this.data.user?.role || 'COLLABORATOR', Validators.required],
       active: [this.data.user?.active ?? false],
     });
   }

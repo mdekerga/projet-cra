@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { CRA } from '../shared/models/cra.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminCraService {
-  private apiUrl = 'http://localhost:8080/api/admin/cras';
+  private apiUrl = `${environment.apiUrl}/admin/cras`;
 
   constructor(private http: HttpClient) {}
 

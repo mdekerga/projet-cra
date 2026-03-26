@@ -28,16 +28,9 @@ public class DataInitializerService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() > 0) return;
+        ensureAdminAccount();
 
-        User admin = new User();
-        admin.setFirst_name("Jean");
-        admin.setLast_name("Admin");
-        admin.setEmail("admin@cbx.fr");
-        admin.setPassword(passwordEncoder.encode("admin123"));
-        admin.setRole(Role.ADMIN);
-        admin.setActive(true);
-        userRepository.save(admin);
+        if (userRepository.count() > 1) return;
 
         User colab1 = createCollab("Alice", "Consultant", "alice@cbx.fr", Statut.MISSION);
         User colab2 = createCollab("Bob", "Junior", "bob@cbx.fr", Statut.INTERCONTRAT);
@@ -85,6 +78,17 @@ public class DataInitializerService implements CommandLineRunner {
 
 
         System.out.println("✅ Base de données peuplée avec succès !");
+    }
+
+    private void ensureAdminAccount() {
+        User admin = userRepository.findByEmail("admin@cbx.fr").orElseGet(User::new);
+        admin.setFirst_name("Jean");
+        admin.setLast_name("Admin");
+        admin.setEmail("admin@cbx.fr");
+        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setRole(Role.ADMIN);
+        admin.setActive(true);
+        userRepository.save(admin);
     }
 
     private User createCollab(String fn, String ln, String email, Statut statut) {

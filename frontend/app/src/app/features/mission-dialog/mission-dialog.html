@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Assigner une mission</h2>
+<h2 mat-dialog-title>{{ isEditMode ? 'Modifier la mission' : 'Créer une mission' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="d-flex flex-column gap-3 mt-2">
     <mat-form-field appearance="outline">

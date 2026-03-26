@@ -65,7 +65,12 @@ export class MissionDialogComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
-      this.missionService.create(this.form.value).subscribe(() => this.ref.close(true));
+      if (this.isEditMode) {
+        const id = this.form.value.id;
+        this.missionService.update(id, this.form.value).subscribe(() => this.ref.close(true));
+      } else {
+        this.missionService.create(this.form.value).subscribe(() => this.ref.close(true));
+      }
     }
   }
 }
