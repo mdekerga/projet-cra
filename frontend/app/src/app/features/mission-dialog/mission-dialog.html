@@ -3,7 +3,7 @@
   <form [formGroup]="form" class="d-flex flex-column gap-3 mt-2">
     <mat-form-field appearance="outline">
       <mat-label>Nom du Client</mat-label>
-      <input matInput formControlName="clientName" />
+      <input matInput formControlName="client" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -17,15 +17,34 @@
     </mat-form-field>
 
     <div class="d-flex gap-2">
-      <input matInput [matDatepicker]="picker" />
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
+      <mat-form-field appearance="outline" class="flex-grow-1">
+        <mat-label>Date de début</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerStart"
+          formControlName="dateDebut"
+          placeholder="JJ/MM/AAAA"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+        <mat-datepicker #pickerStart></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-grow-1">
+        <mat-label>Date de fin</mat-label>
+        <input
+          matInput
+          [matDatepicker]="pickerEnd"
+          formControlName="dateFin"
+          placeholder="JJ/MM/AAAA"
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+        <mat-datepicker #pickerEnd></mat-datepicker>
+      </mat-form-field>
     </div>
 
     <mat-form-field appearance="outline">
       <mat-label>Assigner à...</mat-label>
-      <mat-select formControlName="assignedUserId">
+      <mat-select formControlName="id">
         <mat-option *ngFor="let user of users" [value]="user.id">
           {{ user.firstName }} {{ user.lastName }}
         </mat-option>

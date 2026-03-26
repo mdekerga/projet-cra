@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   standalone: true,
@@ -23,6 +24,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
     MatDatepickerModule,
     MatButtonModule,
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './mission-dialog.html',
 })
 export class MissionDialogComponent implements OnInit {
@@ -39,12 +41,12 @@ export class MissionDialogComponent implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
-      clientName: ['', Validators.required],
+      client: ['', Validators.required],
       titre: ['', Validators.required],
       description: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      assignedUserId: [null, Validators.required],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+      id: [null, Validators.required],
     });
 
     if (this.data && this.data.mission) {

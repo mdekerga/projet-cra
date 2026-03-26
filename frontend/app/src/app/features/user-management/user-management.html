@@ -11,7 +11,6 @@
     </button>
   </div>
 
-
   <div *ngIf="errorMessage" class="alert alert-danger shadow-sm">
     {{ errorMessage }}
   </div>
@@ -76,12 +75,6 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell text-center py-4" colspan="5">
-          Aucun collaborateur enregistré pour le moment.
-        </td>
-      </tr>
     </table>
   </div>
 </div>

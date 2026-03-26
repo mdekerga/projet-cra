@@ -1,0 +1,23 @@
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 15px;
+}
+.full-width {
+  width: 100%;
+}
+::ng-deep .mat-mdc-dialog-content {
+  max-height: 80vh !important;
+}
