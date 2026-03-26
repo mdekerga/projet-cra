@@ -1,20 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table'; 
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatTableModule, 
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatIconModule],
   templateUrl: './admin-dashboard.html',
   styleUrls: ['./admin-dashboard.css'],
 })
@@ -23,6 +17,8 @@ export class AdminDashboardComponent implements OnInit {
   displayedColumns: string[] = ['collaborator', 'month', 'actions'];
   pendingCras: any[] = [];
   stats = { totalCollabs: 0, intercontratCount: 0 };
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     const today = new Date().getDate();
@@ -35,6 +31,7 @@ export class AdminDashboardComponent implements OnInit {
     this.pendingCras = [
       { id: 101, user: { firstName: 'Alice', lastName: 'Martin' }, month: new Date() },
     ];
+    this.cdr.detectChanges();
   }
 
   viewCra(id: number) {

@@ -17,6 +17,8 @@ public class MissionDTO {
     @NotBlank(message = "Le titre est obligatoire")
     private String titre;
 
+    private String Client;
+
     @NotNull(message = "La date de début est obligatoire")
     private LocalDate dateDebut;
 

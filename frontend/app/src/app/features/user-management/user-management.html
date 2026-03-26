@@ -11,15 +11,12 @@
     </button>
   </div>
 
-  <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
-    <mat-spinner diameter="50"></mat-spinner>
-  </div>
 
-  <div *ngIf="!isLoading && errorMessage" class="alert alert-danger shadow-sm">
+  <div *ngIf="errorMessage" class="alert alert-danger shadow-sm">
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="!isLoading && !errorMessage" class="table-container mat-elevation-z3">
+  <div *ngIf="!errorMessage" class="table-container mat-elevation-z3">
     <table mat-table [dataSource]="dataSource" class="full-width-table">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Collaborateur</th>

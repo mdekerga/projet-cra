@@ -11,15 +11,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cras")
-@CrossOrigin(origins = "http://localhost:4200") // Pour autoriser les appels Angular
+@CrossOrigin(origins = "http://localhost:4200")
 public class CraController {
 
     @Autowired
     private CRAService craService;
 
-    /**
-     * Génère ou récupère le CRA brouillon d'un collaborateur pour un mois donné
-     */
     @PostMapping("/generate")
     public ResponseEntity<?> generateCRA(@RequestBody Map<String, Object> payload) {
         try {
@@ -34,23 +31,16 @@ public class CraController {
         }
     }
 
-    /**
-     * Soumission par le collaborateur (Règle 22-28)
-     */
     @PutMapping("/{id}/submit")
     public ResponseEntity<?> submitCRA(@PathVariable Long id) {
         try {
             CRA submitted = craService.submitCRA(id);
             return ResponseEntity.ok(submitted);
         } catch (RuntimeException e) {
-            // Renvoie une erreur 400 si hors fenêtre 22-28
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
-    /**
-     * Action Admin : Validation, Rejet ou Invalidation
-     */
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
