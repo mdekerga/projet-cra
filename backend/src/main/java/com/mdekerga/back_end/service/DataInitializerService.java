@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class DataInitializerService implements CommandLineRunner {
@@ -16,13 +17,15 @@ public class DataInitializerService implements CommandLineRunner {
     private final UserRepository userRepository;
     private final MissionRepository missionRepository;
     private final AssignmentRepository assignmentRepository;
+    private final CRARepository craRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializerService(UserRepository userRepository, MissionRepository missionRepository,
-                           AssignmentRepository assignmentRepository, PasswordEncoder passwordEncoder) {
+                           AssignmentRepository assignmentRepository, CRARepository craRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.missionRepository = missionRepository;
         this.assignmentRepository = assignmentRepository;
+        this.craRepository = craRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -75,9 +78,38 @@ public class DataInitializerService implements CommandLineRunner {
         a1.setEndDate(LocalDate.of(2026, 12, 31));
         assignmentRepository.save(a1);
 
+        ensureDemoSubmittedCra(colab1, m1);
+
 
 
         System.out.println("✅ Base de données peuplée avec succès !");
+    }
+
+    private void ensureDemoSubmittedCra(User collaborator, Mission mission) {
+        LocalDate today = LocalDate.now();
+        int month = today.getMonthValue();
+        int year = today.getYear();
+
+        if (craRepository.existsByUserIdAndMonthAndYear(collaborator.getId(), month, year)) {
+            return;
+        }
+
+        CRA cra = new CRA();
+        cra.setUser(collaborator);
+        cra.setMonth(month);
+        cra.setYear(year);
+        cra.setEtatCRA(EtatCRA.SUBMITTED);
+        cra.setSubmittedAt(LocalDateTime.now());
+
+        CraDay day = new CraDay();
+        day.setCra(cra);
+        day.setDate(today.withDayOfMonth(1));
+        day.setActivityType(Activites.WORK);
+        day.setMission(mission);
+        day.setDuration(1.0);
+        cra.getDays().add(day);
+
+        craRepository.save(cra);
     }
 
     private void ensureAdminAccount() {

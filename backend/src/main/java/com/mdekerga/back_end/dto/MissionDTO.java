@@ -26,6 +26,7 @@ public class MissionDTO {
 
     private String description;
     private String motif;
+    private String assignedUserName;
 
     @Positive(message = "Le TJM doit être supérieur à 0")
     private BigDecimal tjm;

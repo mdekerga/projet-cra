@@ -4,19 +4,27 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminCraService, AdminSubmittedCra } from '../../services/admin-cra.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
+  ],
   templateUrl: './admin-dashboard.html',
   styleUrls: ['./admin-dashboard.css'],
 })
 export class AdminDashboardComponent implements OnInit {
   isSubmissionWindow = false;
-  displayedColumns: string[] = ['collaborator', 'month', 'actions'];
+  displayedColumns: string[] = ['collaborator', 'period', 'mission', 'days', 'actions'];
   pendingCras: AdminSubmittedCra[] = [];
   stats = { totalCollabs: 0, intercontratCount: 0 };
 
@@ -24,6 +32,7 @@ export class AdminDashboardComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private adminCraService: AdminCraService,
     private userService: UserService,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -62,6 +71,24 @@ export class AdminDashboardComponent implements OnInit {
   approve(id: number) {
     this.adminCraService.processCRA(id, true).subscribe(() => {
       this.loadDashboardData();
+    });
+  }
+
+  reject(id: number) {
+    const reason = prompt('Motif du refus :');
+    if (!reason || !reason.trim()) {
+      this.snackBar.open('Le motif de refus est obligatoire.', 'Fermer', { duration: 3000 });
+      return;
+    }
+
+    this.adminCraService.processCRA(id, false, reason.trim()).subscribe({
+      next: () => {
+        this.snackBar.open('CRA refusé et renvoyé au collaborateur.', 'Fermer', { duration: 3000 });
+        this.loadDashboardData();
+      },
+      error: () => {
+        this.snackBar.open('Impossible de refuser ce CRA.', 'Fermer', { duration: 3000 });
+      },
     });
   }
 }

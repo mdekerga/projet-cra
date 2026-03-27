@@ -48,7 +48,7 @@ export class LoginComponent {
         next: () => {
           const role = this.authService.getRole();
           if (role === 'ADMIN') {
-            this.router.navigate(['/admin/users']);
+            this.router.navigate(['/admin/dashboard']);
           } else {
             this.router.navigate(['/collab/dashboard']);
           }

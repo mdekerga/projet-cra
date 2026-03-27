@@ -10,17 +10,22 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-
-  router.navigate(['/login']);
+  router.navigate(['/login'], { queryParams: { reason: 'session-expired', returnUrl: state.url } });
   return false;
 };
-
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated() && authService.getRole() === 'ADMIN') {
+  if (!authService.isAuthenticated()) {
+    router.navigate(['/login'], {
+      queryParams: { reason: 'session-expired', returnUrl: state.url },
+    });
+    return false;
+  }
+
+  if (authService.getRole() === 'ADMIN') {
     return true;
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface AdminSubmittedCra {
@@ -23,7 +23,19 @@ export class AdminCraService {
   constructor(private http: HttpClient) {}
 
   getSubmittedCRAs(): Observable<AdminSubmittedCra[]> {
-    return this.http.get<AdminSubmittedCra[]>(`${this.apiUrl}/submitted`);
+    return this.http
+      .get<AdminSubmittedCra[] | { value?: AdminSubmittedCra[] }>(`${this.apiUrl}/submitted`)
+      .pipe(
+        map((response) => {
+          if (Array.isArray(response)) {
+            return response;
+          }
+          if (Array.isArray(response?.value)) {
+            return response.value;
+          }
+          return [];
+        }),
+      );
   }
 
   processCRA(id: number, approved: boolean, reason?: string): Observable<AdminSubmittedCra> {

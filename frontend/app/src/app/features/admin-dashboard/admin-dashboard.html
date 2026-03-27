@@ -40,9 +40,19 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="month">
-          <th mat-header-cell *matHeaderCellDef>Mois</th>
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef>Période</th>
           <td mat-cell *matCellDef="let cra">{{ getCraMonthLabel(cra) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="mission">
+          <th mat-header-cell *matHeaderCellDef>Mission</th>
+          <td mat-cell *matCellDef="let cra">{{ cra.mission }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="days">
+          <th mat-header-cell *matHeaderCellDef>Jours</th>
+          <td mat-cell *matCellDef="let cra">{{ cra.totalDays }}j</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -51,6 +61,9 @@
             <button mat-button color="primary" (click)="viewCra(cra.id)">Détails</button>
             <button mat-icon-button color="accent" (click)="approve(cra.id)">
               <mat-icon>check</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="reject(cra.id)">
+              <mat-icon>close</mat-icon>
             </button>
           </td>
         </ng-container>
